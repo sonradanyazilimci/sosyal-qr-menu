@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Menü Yönetimi</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+
+<div id="configMissing"></div>
+
+<div id="loginScreen" class="login-screen">
+  <form id="loginForm" class="login-card">
+    <p class="login-eyebrow">Yönetim Paneli</p>
+    <h1 class="login-title">Giriş Yap</h1>
+    <input type="email" id="loginEmail" placeholder="E-posta" autocomplete="username" required />
+    <input type="password" id="loginPassword" placeholder="Şifre" autocomplete="current-password" required />
+    <button type="submit">Giriş Yap</button>
+    <p class="login-error" id="loginError"></p>
+    <p class="login-hint">Giriş bilgileri Firebase Authentication üzerinden yönetilir. Kullanıcı eklemek için README.md dosyasına bakın.</p>
+  </form>
+</div>
+
+<div id="adminApp" class="admin-app hidden">
+  <header class="admin-header">
+    <div>
+      <p class="admin-eyebrow">Yönetim Paneli</p>
+      <h1 class="admin-title">Menü Yönetimi</h1>
+    </div>
+    <div class="admin-header-actions">
+      <a href="index.html" target="_blank" class="btn-ghost">Menüyü Görüntüle ↗</a>
+      <button id="logoutBtn" class="btn-ghost">Çıkış</button>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="menu">Menü</button>
+    <button class="tab-btn" data-tab="settings">Ayarlar</button>
+  </nav>
+
+  <section id="tab-menu" class="tab-panel active">
+    <div class="panel-head">
+      <h2>Kategoriler</h2>
+      <form id="addCategoryForm" class="inline-form">
+        <input type="text" id="newCategoryName" placeholder="Yeni kategori adı (örn. Kokteyl)" required />
+        <button type="submit">Ekle</button>
+      </form>
+    </div>
+    <div id="categoryList" class="category-list"></div>
+    <p id="emptyMenuNote" class="hint-text hidden" style="margin-top:14px;">
+      Menünüz boş. Yukarıdan kategori ekleyerek başlayabilir, ya da
+      <button type="button" id="seedBtn" class="btn-ghost small" style="display:inline-flex;">örnek menüyü yükle</button>
+      diyerek örnek içerikle başlayabilirsiniz.
+    </p>
+  </section>
+
+  <section id="tab-settings" class="tab-panel">
+    <h2>Genel Ayarlar</h2>
+    <form id="settingsForm" class="settings-form">
+      <div class="field-grid">
+        <label>İşletme Adı
+          <input type="text" name="businessName" required />
+        </label>
+        <label>Kullanıcı Adı / Handle
+          <input type="text" name="handle" placeholder="@isletmeadi" />
+        </label>
+        <label>Alt Başlık (Tagline)
+          <input type="text" name="tagline" placeholder="örn. Ateş, İçki ve İyi Sohbet" />
+        </label>
+        <label>Para Birimi
+          <input type="text" name="currency" placeholder="₺" />
+        </label>
+        <label>Vurgu Rengi
+          <input type="color" name="accentColor" />
+        </label>
+      </div>
+
+      <label class="full">İndirim / Duyuru Metni
+        <textarea name="discountText" rows="2" placeholder="örn. Hafta içi 17:00'a kadar %20 indirim"></textarea>
+      </label>
+
+      <label class="full">Alerjen Bilgisi
+        <textarea name="allergensText" rows="3"></textarea>
+      </label>
+
+      <div class="upload-grid">
+        <div class="upload-box">
+          <p class="upload-label">Logo</p>
+          <img id="logoPreview" class="preview-img preview-round hidden" />
+          <input type="file" id="logoInput" accept="image/*" />
+          <button type="button" class="btn-ghost small" id="clearLogoBtn">Logoyu Kaldır</button>
+        </div>
+
+        <div class="upload-box">
+          <p class="upload-label">Karşılama Videosu (mp4/webm)</p>
+          <video id="videoPreview" class="preview-img hidden" muted loop autoplay playsinline></video>
+          <input type="file" id="videoInput" accept="video/mp4,video/webm,video/quicktime" />
+          <button type="button" class="btn-ghost small" id="clearVideoBtn">Videoyu Kaldır (Gradyan kullan)</button>
+          <p class="hint-text">Video eklenmezse otomatik olarak hareketli kor-ateşi gradyanı gösterilir.</p>
+        </div>
+
+        <div class="upload-box">
+          <p class="upload-label">Karşılama Fotoğrafı (video yoksa)</p>
+          <img id="heroImagePreview" class="preview-img hidden" />
+          <input type="file" id="heroImageInput" accept="image/*" />
+          <button type="button" class="btn-ghost small" id="clearHeroImageBtn">Fotoğrafı Kaldır</button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary">Ayarları Kaydet</button>
+      <p class="save-status" id="settingsStatus"></p>
+    </form>
+
+    <h2 class="section-gap">Şifre Değiştir</h2>
+    <form id="passwordForm" class="settings-form">
+      <div class="field-grid">
+        <label>Mevcut Şifre
+          <input type="password" name="currentPassword" required />
+        </label>
+        <label>Yeni Şifre
+          <input type="password" name="newPassword" required minlength="4" />
+        </label>
+      </div>
+      <button type="submit" class="btn-primary">Şifreyi Güncelle</button>
+      <p class="save-status" id="passwordStatus"></p>
+    </form>
+  </section>
+</div>
+
+<template id="tpl-category">
+  <div class="category-card" data-category>
+    <div class="category-card-head">
+      <input type="text" class="cat-name-input" />
+      <div class="row-actions">
+        <button class="btn-ghost small" data-action="save-category">Kaydet</button>
+        <button class="btn-danger small" data-action="delete-category">Sil</button>
+        <button class="btn-ghost small" data-action="toggle-category">▾</button>
+      </div>
+    </div>
+    <div class="category-card-body">
+      <div class="subcategory-list" data-subcategory-list></div>
+      <form class="inline-form indent" data-add-subcategory>
+        <input type="text" placeholder="Yeni alt kategori adı" required />
+        <button type="submit">Alt Kategori Ekle</button>
+      </form>
+    </div>
+  </div>
+</template>
+
+<template id="tpl-subcategory">
+  <div class="subcategory-card" data-subcategory>
+    <div class="subcategory-card-head">
+      <input type="text" class="sub-name-input" />
+      <div class="row-actions">
+        <button class="btn-ghost small" data-action="save-subcategory">Kaydet</button>
+        <button class="btn-danger small" data-action="delete-subcategory">Sil</button>
+        <button class="btn-ghost small" data-action="toggle-subcategory">▾</button>
+      </div>
+    </div>
+    <div class="subcategory-card-body">
+      <div class="product-table" data-product-list></div>
+      <form class="product-form" data-add-product>
+        <div class="field-grid tight">
+          <input type="text" name="name" placeholder="Ürün adı" required />
+          <input type="number" name="price" placeholder="Fiyat" min="0" step="1" required />
+          <input type="number" name="calories" placeholder="Kalori (opsiyonel)" min="0" step="1" />
+          <input type="text" name="badge" placeholder="Rozet emoji (opsiyonel, örn. ⭐)" maxlength="4" />
+        </div>
+        <textarea name="description" placeholder="Açıklama" rows="2"></textarea>
+        <div class="field-grid tight">
+          <input type="file" name="image" accept="image/*" />
+          <button type="submit" class="btn-primary small">Ürün Ekle</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
+
+<template id="tpl-product-row">
+  <div class="product-row" data-product>
+    <img class="product-row-img" />
+    <div class="product-row-info">
+      <input type="text" class="p-name" />
+      <div class="field-grid tight">
+        <input type="number" class="p-price" placeholder="Fiyat" />
+        <input type="number" class="p-calories" placeholder="Kalori" />
+        <input type="text" class="p-badge" placeholder="Rozet" maxlength="4" />
+      </div>
+      <textarea class="p-desc" rows="2" placeholder="Açıklama"></textarea>
+      <div class="field-grid tight">
+        <input type="file" class="p-image" accept="image/*" />
+        <label class="checkbox-label"><input type="checkbox" class="p-clear-image" /> Fotoğrafı kaldır</label>
+      </div>
+    </div>
+    <div class="row-actions column">
+      <button class="btn-ghost small" data-action="save-product">Kaydet</button>
+      <button class="btn-danger small" data-action="delete-product">Sil</button>
+    </div>
+  </div>
+</template>
+
+<script type="module" src="js/admin.js"></script>
+</body>
+</html>
