@@ -332,7 +332,7 @@ function initAdmin() {
 
     const productList = node.querySelector('[data-product-list]');
     const products = [...(sub.products || [])].sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
-    products.forEach((p) => productList.appendChild(buildProductRow(sub, p)));
+    products.forEach((p) => productList.appendChild(buildProductRow(cat, sub, p)));
 
     node.querySelector('[data-action="toggle-subcategory"]').addEventListener('click', () => {
       node.classList.toggle('open');
@@ -377,12 +377,7 @@ function initAdmin() {
         await saveCategories();
         addForm.reset();
         renderCategories();
-        const refreshedCat = categoryList.querySelector(`[data-category][data-id="${cat.id}"]`);
-        if (refreshedCat) {
-          refreshedCat.classList.add('open');
-          const refreshedSub = refreshedCat.querySelector(`[data-subcategory][data-id="${sub.id}"]`);
-          if (refreshedSub) refreshedSub.classList.add('open');
-        }
+        reopenCategoryAndSub(cat.id, sub.id);
       } catch (err) {
         console.error(err);
         alert('Ürün eklenemedi: ' + err.message);
@@ -392,7 +387,16 @@ function initAdmin() {
     return node;
   }
 
-  function buildProductRow(sub, product) {
+  function reopenCategoryAndSub(catId, subId) {
+    const refreshedCat = categoryList.querySelector(`[data-category][data-id="${catId}"]`);
+    if (refreshedCat) {
+      refreshedCat.classList.add('open');
+      const refreshedSub = refreshedCat.querySelector(`[data-subcategory][data-id="${subId}"]`);
+      if (refreshedSub) refreshedSub.classList.add('open');
+    }
+  }
+
+  function buildProductRow(cat, sub, product) {
     const node = tplProductRow.content.firstElementChild.cloneNode(true);
     node.dataset.id = product.id;
     const img = node.querySelector('.product-row-img');
@@ -421,6 +425,7 @@ function initAdmin() {
 
         await saveCategories();
         renderCategories();
+        reopenCategoryAndSub(cat.id, sub.id);
       } catch (err) {
         console.error(err);
         alert('Kaydedilemedi: ' + err.message);
@@ -432,6 +437,7 @@ function initAdmin() {
       sub.products = sub.products.filter((p) => p.id !== product.id);
       await saveCategories();
       renderCategories();
+      reopenCategoryAndSub(cat.id, sub.id);
     });
 
     return node;
