@@ -88,6 +88,25 @@
         <textarea name="allergensText" rows="3"></textarea>
       </label>
 
+      <p class="upload-label" style="margin:4px 0 10px;">Alt Bağlantılar (menü altında, doldurulan alanlar görünür)</p>
+      <div class="field-grid">
+        <label>Instagram Linki
+          <input type="text" name="instagramUrl" placeholder="https://instagram.com/kullaniciadi" />
+        </label>
+        <label>Google Haritalar — Yol Tarifi Linki
+          <input type="text" name="mapsDirectionsUrl" placeholder="https://maps.app.goo.gl/..." />
+        </label>
+        <label>Google Haritalar — Yorumlar Linki
+          <input type="text" name="mapsReviewsUrl" placeholder="https://g.page/r/.../review" />
+        </label>
+        <label>Wi-Fi Ağ Adı
+          <input type="text" name="wifiName" placeholder="örn. Sokak Bari Misafir" />
+        </label>
+        <label>Wi-Fi Şifresi
+          <input type="text" name="wifiPassword" placeholder="örn. sokakbari2024" />
+        </label>
+      </div>
+
       <div class="upload-grid">
         <div class="upload-box">
           <p class="upload-label">Logo</p>
@@ -99,11 +118,11 @@
         <div class="upload-box">
           <p class="upload-label">Karşılama Videosu</p>
           <video id="videoPreview" class="preview-img hidden" muted loop autoplay playsinline></video>
-          <input type="url" id="videoUrlInput" placeholder="https://.../video.mp4 (video linki)" />
-          <p class="hint-text">Önerilen yöntem: videonuzu bir yere (Cloudinary, kendi siteniz, Google Drive doğrudan link vb.) yükleyip linkini buraya yapıştırın — Storage/Blaze planı gerektirmez.</p>
+          <input type="text" id="videoUrlInput" placeholder="media/hero.mp4 (proje içi dosya) veya https://.../video.mp4" />
+          <p class="hint-text">Önerilen yöntem: video dosyasını <code>media/</code> klasörüne koyup GitHub'a push edin, sonra buraya <code>media/hero.mp4</code> gibi dosya yolunu yazın — Storage/Blaze planı gerektirmez, video GitHub'dan servis edilir. Detaylar için <code>media/README.md</code>'ye bakın.</p>
           <p class="hint-text" style="text-align:center;">— veya —</p>
           <input type="file" id="videoInput" accept="video/mp4,video/webm,video/quicktime" />
-          <p class="hint-text">Dosya olarak yüklemek Firebase Storage (Blaze planı) gerektirir.</p>
+          <p class="hint-text">Dosya olarak buradan yüklemek Firebase Storage (Blaze planı) gerektirir.</p>
           <button type="button" class="btn-ghost small" id="clearVideoBtn">Videoyu Kaldır (Gradyan kullan)</button>
           <p class="hint-text">Video eklenmezse otomatik olarak hareketli kor-ateşi gradyanı gösterilir.</p>
         </div>

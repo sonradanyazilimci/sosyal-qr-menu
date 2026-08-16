@@ -44,6 +44,11 @@ function initAdmin() {
     discountText: '',
     allergensText: '',
     currency: '₺',
+    instagramUrl: '',
+    mapsDirectionsUrl: '',
+    mapsReviewsUrl: '',
+    wifiName: '',
+    wifiPassword: '',
   };
 
   function newId(prefix) {
@@ -179,7 +184,7 @@ function initAdmin() {
     settingsStatus.textContent = 'Kaydediliyor…';
     try {
       const fd = new FormData(settingsForm);
-      const fields = ['businessName', 'handle', 'tagline', 'accentColor', 'discountText', 'allergensText', 'currency'];
+      const fields = ['businessName', 'handle', 'tagline', 'accentColor', 'discountText', 'allergensText', 'currency', 'instagramUrl', 'mapsDirectionsUrl', 'mapsReviewsUrl', 'wifiName', 'wifiPassword'];
       fields.forEach((f) => { menuData.settings[f] = fd.get(f) ?? ''; });
 
       const logoFile = document.getElementById('logoInput').files[0];

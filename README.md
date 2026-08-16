@@ -59,16 +59,20 @@ service firebase.storage {
 
 Bu kurallar sayesinde menü herkes tarafından görüntülenebilir, ama sadece giriş yapmış (Authentication'a eklediğiniz) yönetici değişiklik yapabilir.
 
-## Karşılama videosu: link ile ekleme (Storage/Blaze gerektirmez)
+## Karşılama videosu ekleme (Storage/Blaze gerektirmez)
 
-Admin panelinde **Ayarlar > Karşılama Videosu** kutusunda bir **video linki** alanı var. Storage/Blaze planına ihtiyaç duymadan, videonuzu (örn. işletmenizin drone çekimi) şu yollardan biriyle barındırıp doğrudan dosya linkini (`.mp4` ile biten, tarayıcıda doğrudan oynatılabilen bir link) buraya yapıştırabilirsiniz:
+Admin panelinde **Ayarlar > Karşılama Videosu** kutusunda bir metin alanı var; buraya iki türden biri girilebilir:
 
-- **Cloudinary** (ücretsiz plan) — video yükleyip size verdiği doğrudan linki kullanın.
-- **Kendi web siteniz / hosting'iniz** — videoyu oraya koyup linkini kullanın.
-- **Google Drive** — dosyayı "Bağlantıya sahip olan herkes" olarak paylaşıp doğrudan indirme linkine çevirin (`...&export=download` formatı); büyük dosyalarda bazen sorunlu olabilir.
-- **Dropbox** — paylaşım linkinin sonundaki `?dl=0` kısmını `?dl=1` yapın.
+**Yöntem A — GitHub'dan servis (önerilen, Storage/Blaze gerektirmez):**
 
-**YouTube/Vimeo linkleri çalışmaz** — bunlar `<video>` etiketiyle doğrudan oynatılamaz, sayfa gömme (embed) gerektirir. Doğrudan bir `.mp4`/`.webm` dosya linki olmalı.
+1. Video dosyanızı (örn. işletmenizin drone çekimi) proje klasöründeki **`media/`** klasörüne kopyalayın, örn. `media/hero.mp4`.
+2. Projeyi (bu dosya dahil) GitHub'a push edin / GitHub Pages'i güncelleyin.
+3. Admin panelinde video alanına tam olarak şunu yazın: `media/hero.mp4` (proje köküne göre göreli yol).
+4. Kaydedin — video artık sitenizle birlikte GitHub'dan servis edilir, ayrı bir hosting veya Firebase Storage gerekmez.
+
+Detaylı ipuçları (dosya adı, sıkıştırma, boyut) için `media/README.md` dosyasına bakın — özetle: dosya adını sade tutun, videoyu 10-20 saniyelik bir döngüye indirip ~15-25 MB altında sıkıştırın (HandBrake vb.), ham drone çekimini olduğu gibi kullanmayın.
+
+**Yöntem B — Dış link:** Videonuzu Cloudinary, kendi hosting'iniz, Google Drive (doğrudan indirme linki) veya Dropbox (`?dl=1`) gibi bir yerde barındırıp tam URL'sini aynı alana yapıştırabilirsiniz. **YouTube/Vimeo linkleri çalışmaz** — bunlar `<video>` etiketiyle doğrudan oynatılamaz. Doğrudan bir `.mp4`/`.webm` dosya linki olmalı.
 
 ## 3) Yerel test
 
@@ -97,7 +101,9 @@ QR kodunuzu bu adrese göre oluşturup masalara yerleştirebilirsiniz.
 
 ## Admin panelinden yapılabilecekler
 
-**Ayarlar sekmesi:** işletme adı, handle, alt başlık, para birimi, vurgu rengi, logo, karşılama videosu/fotoğrafı, indirim metni, alerjen bilgisi, şifre değiştirme.
+**Ayarlar sekmesi:** işletme adı, handle, alt başlık, para birimi, vurgu rengi, logo, karşılama videosu/fotoğrafı, indirim metni, alerjen bilgisi, alt bağlantılar (Instagram, Google Haritalar yol tarifi/yorumlar linki, Wi-Fi ağ adı ve şifresi), şifre değiştirme.
+
+Alt bağlantılar bölümündeki alanlardan hangileri doldurulursa, menünün en altında (footer'ın hemen üstünde) sadece o kadar ikon/kart görünür — boş bıraktığınız alan hiç gösterilmez. Wi-Fi kartına dokunulunca ağ adı ve şifresinin göründüğü, dokununca kopyalanabilen bir kart açılır.
 
 **Menü sekmesi:** kategori → alt kategori → ürün (isim, açıklama, fiyat, kalori, rozet emoji, fotoğraf) ekle/düzenle/sil. Menü boşsa tek tıkla örnek içerik yükleyebilirsiniz.
 

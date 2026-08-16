@@ -327,6 +327,42 @@ button { font-family: inherit; }
 .info-sheet-text { font-family: var(--font-body); font-size: 0.92rem; line-height: 1.7; color: rgba(244,236,219,0.82); margin: 0; }
 
 /* ============================================================
+   QUICK LINKS (instagram / yol tarifi / yorumlar / wifi)
+   ============================================================ */
+.quick-links {
+  max-width: 720px; margin: 0 auto; padding: 6px var(--edge) 10px;
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+}
+@media (min-width: 560px) { .quick-links { grid-template-columns: repeat(4, 1fr); } }
+
+.quick-link {
+  display: flex; align-items: center; gap: 10px; padding: 13px 14px; border-radius: 10px;
+  background: var(--ink-raised); border: 1px solid var(--line); color: var(--paper);
+  font-family: var(--font-body); font-weight: 600; font-size: 0.85rem;
+  text-decoration: none; cursor: pointer; transition: transform .18s ease, border-color .18s ease;
+}
+.quick-link:hover, .quick-link:focus-visible { transform: translateY(-2px); border-color: rgba(217,125,61,0.45); }
+.quick-link-icon { width: 19px; height: 19px; flex-shrink: 0; color: var(--ember-soft); }
+.quick-link-icon svg { width: 100%; height: 100%; }
+.quick-link-label { line-height: 1.2; }
+
+.wifi-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px 0; border-bottom: 1px solid var(--line);
+}
+.wifi-row:last-of-type { border-bottom: none; }
+.wifi-label { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ash); margin: 0 0 4px; }
+.wifi-value { font-family: var(--font-body); font-size: 1.05rem; font-weight: 600; color: var(--paper); margin: 0; word-break: break-word; }
+.wifi-copy {
+  width: 36px; height: 36px; flex-shrink: 0; border-radius: 8px; background: var(--ink);
+  border: 1px solid var(--line); color: var(--ember-soft); display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.wifi-copy svg { width: 17px; height: 17px; }
+.wifi-copy:hover { border-color: rgba(217,125,61,0.45); }
+.wifi-hint { font-family: var(--font-mono); font-size: 11px; color: var(--ash-dim); margin: 14px 0 0; text-align: center; }
+
+/* ============================================================
    FOOTER
    ============================================================ */
 .menu-footer {

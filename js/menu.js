@@ -66,6 +66,44 @@ function renderDiscount(settings) {
   return `<div class="discount-strip">${esc(settings.discountText)}</div>`;
 }
 
+const ICONS = {
+  instagram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="0.6" fill="currentColor" stroke="none"/></svg>',
+  pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-6.2-7-11a7 7 0 1 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>',
+  star: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.6-4.4 4 1.2 5.8L12 16.6l-5.3 2.7 1.2-5.8-4.4-4 5.9-.6z"/></svg>',
+  wifi: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 8.5a15 15 0 0 1 20 0"/><path d="M5.5 12.5a10 10 0 0 1 13 0"/><path d="M9 16.3a5 5 0 0 1 6 0"/><circle cx="12" cy="19.5" r="1.1" fill="currentColor" stroke="none"/></svg>',
+  copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M5 16H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v1"/></svg>',
+};
+
+function renderQuickLinks(settings) {
+  const items = [];
+  if (settings.instagramUrl) {
+    items.push(`<a class="quick-link" href="${esc(settings.instagramUrl)}" target="_blank" rel="noopener">
+      <span class="quick-link-icon">${ICONS.instagram}</span>
+      <span class="quick-link-label">Instagram</span>
+    </a>`);
+  }
+  if (settings.mapsDirectionsUrl) {
+    items.push(`<a class="quick-link" href="${esc(settings.mapsDirectionsUrl)}" target="_blank" rel="noopener">
+      <span class="quick-link-icon">${ICONS.pin}</span>
+      <span class="quick-link-label">Yol Tarifi</span>
+    </a>`);
+  }
+  if (settings.mapsReviewsUrl) {
+    items.push(`<a class="quick-link" href="${esc(settings.mapsReviewsUrl)}" target="_blank" rel="noopener">
+      <span class="quick-link-icon">${ICONS.star}</span>
+      <span class="quick-link-label">Yorumlar</span>
+    </a>`);
+  }
+  if (settings.wifiName) {
+    items.push(`<button class="quick-link" type="button" id="wifiBtn">
+      <span class="quick-link-icon">${ICONS.wifi}</span>
+      <span class="quick-link-label">Wi-Fi</span>
+    </button>`);
+  }
+  if (!items.length) return '';
+  return `<section class="quick-links">${items.join('')}</section>`;
+}
+
 function productCard(product, currency) {
   const media = product.image
     ? `<img src="${esc(product.image)}" alt="${esc(product.name)}" loading="lazy" />`
@@ -138,6 +176,21 @@ function findProduct(data, id) {
   return null;
 }
 
+function copyToClipboard(text) {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.top = '-1000px';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch { ok = false; }
+  document.body.removeChild(textarea);
+  return ok;
+}
+
 function openSheet(overlayEl) {
   overlayEl.classList.add('visible');
   document.body.style.overflow = 'hidden';
@@ -159,6 +212,7 @@ function renderApp(data) {
       <p class="menu-heading">Menü</p>
       ${renderCategories(categories, settings.currency)}
     </main>
+    ${renderQuickLinks(settings)}
     <footer class="menu-footer">${esc(settings.handle || '')} · dijital menü</footer>
 
     <div class="sheet-overlay" id="productOverlay">
@@ -174,6 +228,31 @@ function renderApp(data) {
         <div class="info-sheet-body">
           <h2 class="info-sheet-title">Alerjenler</h2>
           <p class="info-sheet-text">${esc(settings.allergensText || 'Bilgi eklenmemiş.')}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sheet-overlay" id="wifiOverlay">
+      <div class="sheet" role="dialog" aria-modal="true">
+        <div class="sheet-grabber"><span></span></div>
+        <div class="info-sheet-body">
+          <h2 class="info-sheet-title">Wi-Fi</h2>
+          <div class="wifi-row">
+            <div>
+              <p class="wifi-label">Ağ Adı</p>
+              <p class="wifi-value">${esc(settings.wifiName || '')}</p>
+            </div>
+            <button class="wifi-copy" type="button" data-copy="${esc(settings.wifiName || '')}" aria-label="Ağ adını kopyala">${ICONS.copy}</button>
+          </div>
+          ${settings.wifiPassword ? `
+          <div class="wifi-row">
+            <div>
+              <p class="wifi-label">Şifre</p>
+              <p class="wifi-value">${esc(settings.wifiPassword)}</p>
+            </div>
+            <button class="wifi-copy" type="button" data-copy="${esc(settings.wifiPassword)}" aria-label="Şifreyi kopyala">${ICONS.copy}</button>
+          </div>` : ''}
+          <p class="wifi-hint" id="wifiCopyHint">Kopyalamak için ikona dokunun</p>
         </div>
       </div>
     </div>
@@ -236,8 +315,24 @@ function renderApp(data) {
   document.getElementById('allergensBtn').addEventListener('click', () => openSheet(infoOverlay));
   infoOverlay.addEventListener('click', (e) => { if (e.target === infoOverlay) closeSheet(infoOverlay); });
 
+  // wifi sheet
+  const wifiOverlay = document.getElementById('wifiOverlay');
+  document.getElementById('wifiBtn')?.addEventListener('click', () => openSheet(wifiOverlay));
+  wifiOverlay.addEventListener('click', (e) => { if (e.target === wifiOverlay) closeSheet(wifiOverlay); });
+  wifiOverlay.querySelectorAll('[data-copy]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const value = btn.dataset.copy;
+      const hint = document.getElementById('wifiCopyHint');
+      const ok = copyToClipboard(value);
+      if (hint) {
+        hint.textContent = ok ? 'Kopyalandı ✓' : value;
+        setTimeout(() => { hint.textContent = 'Kopyalamak için ikona dokunun'; }, 1800);
+      }
+    });
+  });
+
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') { closeSheet(productOverlay); closeSheet(infoOverlay); }
+    if (e.key === 'Escape') { closeSheet(productOverlay); closeSheet(infoOverlay); closeSheet(wifiOverlay); }
   });
 
   // smooth scroll from hero
