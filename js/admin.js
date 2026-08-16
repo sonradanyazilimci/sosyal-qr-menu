@@ -239,6 +239,11 @@ function initAdmin() {
   const tplCategory = document.getElementById('tpl-category');
   const tplSubcategory = document.getElementById('tpl-subcategory');
   const tplProductRow = document.getElementById('tpl-product-row');
+  const tplPhotoRow = document.getElementById('tpl-photo-row');
+  const BLANK_PIXEL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+  const photoLinksTable = document.getElementById('photoLinksTable');
+  const emptyPhotosNote = document.getElementById('emptyPhotosNote');
+  const photosStatus = document.getElementById('photosStatus');
 
   document.getElementById('addCategoryForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -274,6 +279,7 @@ function initAdmin() {
     const cats = [...(menuData.categories || [])].sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
     cats.forEach((cat) => categoryList.appendChild(buildCategoryCard(cat)));
     emptyMenuNote.classList.toggle('hidden', cats.length > 0);
+    renderPhotoLinks();
   }
 
   function buildCategoryCard(cat) {
@@ -355,7 +361,8 @@ function initAdmin() {
       if (!name || !price) return;
       try {
         const file = addForm.querySelector('input[type="file"]').files[0];
-        const image = file ? await uploadFile(file, 'product') : null;
+        const imageUrl = fd.get('imageUrl')?.toString().trim();
+        const image = file ? await uploadFile(file, 'product') : (imageUrl || null);
         const maxOrder = sub.products.reduce((m, p) => Math.max(m, p.sortOrder || 0), 0);
         sub.products.push({
           id: newId('p'),
@@ -395,6 +402,7 @@ function initAdmin() {
     node.querySelector('.p-calories').value = product.calories ?? '';
     node.querySelector('.p-badge').value = product.badge || '';
     node.querySelector('.p-desc').value = product.description || '';
+    node.querySelector('.p-image-url').value = product.image || '';
 
     node.querySelector('[data-action="save-product"]').addEventListener('click', async () => {
       try {
@@ -406,7 +414,9 @@ function initAdmin() {
         product.description = node.querySelector('.p-desc').value;
 
         const imageFile = node.querySelector('.p-image').files[0];
+        const imageUrl = node.querySelector('.p-image-url').value.trim();
         if (imageFile) product.image = await uploadFile(imageFile, 'product');
+        else product.image = imageUrl || null;
         if (node.querySelector('.p-clear-image').checked) product.image = null;
 
         await saveCategories();
@@ -426,6 +436,63 @@ function initAdmin() {
 
     return node;
   }
+
+  // ================= PHOTO LINKS TAB =================
+  function flattenProducts() {
+    const rows = [];
+    for (const cat of menuData.categories || []) {
+      for (const sub of cat.subcategories || []) {
+        for (const product of sub.products || []) {
+          rows.push({ cat, sub, product });
+        }
+      }
+    }
+    return rows;
+  }
+
+  function renderPhotoLinks() {
+    if (!photoLinksTable) return;
+    photoLinksTable.innerHTML = '';
+    const rows = flattenProducts();
+    rows.forEach(({ cat, sub, product }) => {
+      const node = tplPhotoRow.content.firstElementChild.cloneNode(true);
+      node.dataset.productId = product.id;
+      const thumb = node.querySelector('.photo-row-thumb');
+      const input = node.querySelector('.photo-row-input');
+      node.querySelector('.photo-row-path').textContent = `${cat.name} › ${sub.name}`;
+      node.querySelector('.photo-row-name').textContent = product.name;
+      input.value = product.image || '';
+      thumb.src = product.image || BLANK_PIXEL;
+      thumb.style.background = '#232a37';
+      input.addEventListener('input', () => {
+        thumb.src = input.value.trim() || BLANK_PIXEL;
+        thumb.onerror = () => { thumb.src = BLANK_PIXEL; };
+      });
+      photoLinksTable.appendChild(node);
+    });
+    emptyPhotosNote.classList.toggle('hidden', rows.length > 0);
+    photoLinksTable.classList.toggle('hidden', rows.length === 0);
+  }
+
+  document.getElementById('savePhotosBtn')?.addEventListener('click', async () => {
+    photosStatus.textContent = 'Kaydediliyor…';
+    try {
+      const rows = flattenProducts();
+      photoLinksTable.querySelectorAll('[data-photo-row]').forEach((node) => {
+        const id = node.dataset.productId;
+        const value = node.querySelector('.photo-row-input').value.trim();
+        const match = rows.find((r) => r.product.id === id);
+        if (match) match.product.image = value || null;
+      });
+      await saveCategories();
+      renderCategories();
+      photosStatus.textContent = 'Kaydedildi ✓';
+    } catch (err) {
+      console.error(err);
+      photosStatus.textContent = 'Hata: ' + err.message;
+    }
+    setTimeout(() => (photosStatus.textContent = ''), 3000);
+  });
 
   function buildSeedCategories() {
     return [

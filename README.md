@@ -105,7 +105,9 @@ QR kodunuzu bu adrese göre oluşturup masalara yerleştirebilirsiniz.
 
 Alt bağlantılar bölümündeki alanlardan hangileri doldurulursa, menünün en altında (footer'ın hemen üstünde) sadece o kadar ikon/kart görünür — boş bıraktığınız alan hiç gösterilmez. Wi-Fi kartına dokunulunca ağ adı ve şifresinin göründüğü, dokununca kopyalanabilen bir kart açılır.
 
-**Menü sekmesi:** kategori → alt kategori → ürün (isim, açıklama, fiyat, kalori, rozet emoji, fotoğraf) ekle/düzenle/sil. Menü boşsa tek tıkla örnek içerik yükleyebilirsiniz.
+**Menü sekmesi:** kategori → alt kategori → ürün (isim, açıklama, fiyat, kalori, rozet emoji, fotoğraf) ekle/düzenle/sil. Menü boşsa tek tıkla örnek içerik yükleyebilirsiniz. Her ürünün fotoğrafı dosya yükleme (Blaze gerektirir) yerine bir **link veya `media/urun.jpg` gibi proje içi yol** ile de eklenebilir.
+
+**Fotoğraf Linkleri sekmesi:** tüm ürünleri kategori/alt kategori ve isimleriyle tek bir listede gösterir; her satırda küçük bir önizleme ve düzenlenebilir bir fotoğraf linki alanı vardır. Kategori/alt kategori içine tek tek girmeden, birçok ürünün fotoğrafını hızlıca güncelleyip en sonda tek seferde **"Tümünü Kaydet"**e basabilirsiniz — çok ürünlü menüler için pratik bir toplu düzenleme alanı.
 
 Yaptığınız her değişiklik Firestore'a anında yazılır ve açık olan müşteri menüsü ekranlarında **otomatik olarak, sayfa yenilenmeden** görünür (canlı güncelleme).
 

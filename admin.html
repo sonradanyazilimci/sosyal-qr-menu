@@ -40,6 +40,7 @@
 
   <nav class="tabs">
     <button class="tab-btn active" data-tab="menu">Menü</button>
+    <button class="tab-btn" data-tab="photos">Fotoğraf Linkleri</button>
     <button class="tab-btn" data-tab="settings">Ayarlar</button>
   </nav>
 
@@ -57,6 +58,21 @@
       <button type="button" id="seedBtn" class="btn-ghost small" style="display:inline-flex;">örnek menüyü yükle</button>
       diyerek örnek içerikle başlayabilirsiniz.
     </p>
+  </section>
+
+  <section id="tab-photos" class="tab-panel">
+    <div class="panel-head">
+      <h2>Fotoğraf Linkleri</h2>
+      <button type="button" id="savePhotosBtn" class="btn-primary">Tümünü Kaydet</button>
+    </div>
+    <p class="hint-text" style="margin-bottom:14px;">
+      Her ürün için fotoğraf linki (tam URL, örn. <code>https://.../foto.jpg</code>) veya proje içi dosya yolu
+      (örn. <code>media/urun.jpg</code>) girin. İstediğiniz kadar alanı değiştirip en sonda tek seferde
+      <strong>"Tümünü Kaydet"</strong>e basmanız yeterli.
+    </p>
+    <div id="photoLinksTable" class="photo-links-table"></div>
+    <p id="emptyPhotosNote" class="hint-text hidden">Henüz ürün eklenmemiş. Önce Menü sekmesinden ürün ekleyin.</p>
+    <p class="save-status" id="photosStatus"></p>
   </section>
 
   <section id="tab-settings" class="tab-panel">
@@ -195,6 +211,7 @@
           <input type="text" name="badge" placeholder="Rozet emoji (opsiyonel, örn. ⭐)" maxlength="4" />
         </div>
         <textarea name="description" placeholder="Açıklama" rows="2"></textarea>
+        <input type="text" name="imageUrl" placeholder="Fotoğraf linki veya media/urun.jpg (opsiyonel)" />
         <div class="field-grid tight">
           <input type="file" name="image" accept="image/*" />
           <button type="submit" class="btn-primary small">Ürün Ekle</button>
@@ -215,6 +232,7 @@
         <input type="text" class="p-badge" placeholder="Rozet" maxlength="4" />
       </div>
       <textarea class="p-desc" rows="2" placeholder="Açıklama"></textarea>
+      <input type="text" class="p-image-url" placeholder="Fotoğraf linki veya media/urun.jpg" />
       <div class="field-grid tight">
         <input type="file" class="p-image" accept="image/*" />
         <label class="checkbox-label"><input type="checkbox" class="p-clear-image" /> Fotoğrafı kaldır</label>
@@ -223,6 +241,17 @@
     <div class="row-actions column">
       <button class="btn-ghost small" data-action="save-product">Kaydet</button>
       <button class="btn-danger small" data-action="delete-product">Sil</button>
+    </div>
+  </div>
+</template>
+
+<template id="tpl-photo-row">
+  <div class="photo-row" data-photo-row>
+    <img class="photo-row-thumb" />
+    <div class="photo-row-info">
+      <p class="photo-row-path"></p>
+      <p class="photo-row-name"></p>
+      <input type="text" class="photo-row-input" placeholder="Fotoğraf linki veya media/urun.jpg" />
     </div>
   </div>
 </template>
