@@ -127,8 +127,8 @@ button { font-family: inherit; }
 }
 
 .hero-title {
-  font-family: var(--font-display); font-weight: 600; font-size: clamp(2.1rem, 8vw, 3.4rem);
-  line-height: 1.05; color: var(--paper); margin: 0; max-width: 16ch;
+  font-family: var(--font-display); font-weight: 600; font-size: clamp(1.6rem, 5.5vw, 2.5rem);
+  line-height: 1.1; color: var(--paper); margin: 0; max-width: 16ch;
 }
 
 .hero-tagline {

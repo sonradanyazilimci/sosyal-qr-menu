@@ -97,9 +97,13 @@
         </div>
 
         <div class="upload-box">
-          <p class="upload-label">Karşılama Videosu (mp4/webm)</p>
+          <p class="upload-label">Karşılama Videosu</p>
           <video id="videoPreview" class="preview-img hidden" muted loop autoplay playsinline></video>
+          <input type="url" id="videoUrlInput" placeholder="https://.../video.mp4 (video linki)" />
+          <p class="hint-text">Önerilen yöntem: videonuzu bir yere (Cloudinary, kendi siteniz, Google Drive doğrudan link vb.) yükleyip linkini buraya yapıştırın — Storage/Blaze planı gerektirmez.</p>
+          <p class="hint-text" style="text-align:center;">— veya —</p>
           <input type="file" id="videoInput" accept="video/mp4,video/webm,video/quicktime" />
+          <p class="hint-text">Dosya olarak yüklemek Firebase Storage (Blaze planı) gerektirir.</p>
           <button type="button" class="btn-ghost small" id="clearVideoBtn">Videoyu Kaldır (Gradyan kullan)</button>
           <p class="hint-text">Video eklenmezse otomatik olarak hareketli kor-ateşi gradyanı gösterilir.</p>
         </div>

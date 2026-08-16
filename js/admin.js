@@ -148,6 +148,7 @@ function initAdmin() {
     const videoPreview = document.getElementById('videoPreview');
     if (settings.heroVideo) { videoPreview.src = settings.heroVideo; videoPreview.classList.remove('hidden'); }
     else videoPreview.classList.add('hidden');
+    document.getElementById('videoUrlInput').value = settings.heroVideo || '';
 
     const heroImagePreview = document.getElementById('heroImagePreview');
     if (settings.heroImage) { heroImagePreview.src = settings.heroImage; heroImagePreview.classList.remove('hidden'); }
@@ -165,6 +166,7 @@ function initAdmin() {
     pendingClears.video = true;
     document.getElementById('videoPreview').classList.add('hidden');
     document.getElementById('videoInput').value = '';
+    document.getElementById('videoUrlInput').value = '';
   });
   document.getElementById('clearHeroImageBtn').addEventListener('click', () => {
     pendingClears.heroImage = true;
@@ -183,10 +185,12 @@ function initAdmin() {
       const logoFile = document.getElementById('logoInput').files[0];
       const videoFile = document.getElementById('videoInput').files[0];
       const heroImageFile = document.getElementById('heroImageInput').files[0];
+      const videoUrl = document.getElementById('videoUrlInput').value.trim();
 
       const uploads = [];
       if (logoFile) uploads.push(uploadFile(logoFile, 'logo').then((url) => { menuData.settings.logo = url; }));
       if (videoFile) uploads.push(uploadFile(videoFile, 'video').then((url) => { menuData.settings.heroVideo = url; }));
+      else if (videoUrl) menuData.settings.heroVideo = videoUrl;
       if (heroImageFile) uploads.push(uploadFile(heroImageFile, 'hero').then((url) => { menuData.settings.heroImage = url; }));
       await Promise.all(uploads);
 

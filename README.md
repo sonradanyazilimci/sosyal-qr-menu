@@ -19,7 +19,7 @@ js/firebase-config.js → SADECE bu dosyayı kendi Firebase bilgilerinizle doldu
 
 1. [console.firebase.google.com](https://console.firebase.google.com) adresinden yeni bir proje oluşturun.
 2. Sol menüden **Build > Firestore Database** → *Create database* → herhangi bir bölge seçip **production mode** ile oluşturun.
-3. Sol menüden **Build > Storage** → *Get started* → production mode ile oluşturun.
+3. **(Opsiyonel)** Sol menüden **Build > Storage** → *Get started*. Storage artık ücretli **Blaze** planı gerektiriyor. Logo/ürün fotoğrafı/video dosyasını doğrudan panelden yüklemek istiyorsanız gereklidir — istemiyorsanız atlayabilirsiniz: karşılama videosu için panelde bir **link** alanı da var (aşağıdaki "Karşılama videosu" notuna bakın), bu Storage gerektirmez.
 4. Sol menüden **Build > Authentication** → *Get started* → **Sign-in method** sekmesinden **Email/Password** sağlayıcısını etkinleştirin.
 5. **Authentication > Users** sekmesinden *Add user* ile kendinize bir yönetici e-posta/şifresi oluşturun (bu bilgilerle admin paneline giriş yapacaksınız).
 6. Proje ayarları (dişli ikonu) **> Project settings > General** sekmesinde en altta **"Your apps"** bölümünden *Web* (`</>`) simgesine tıklayıp bir uygulama kaydedin. Size verilen `firebaseConfig` nesnesini kopyalayın.
@@ -43,7 +43,7 @@ service cloud.firestore {
 }
 ```
 
-**Storage > Rules** sekmesine gidip aşağıdakini yapıştırıp yayınlayın:
+**Storage kullanacaksanız** (Blaze plan aktifse), **Storage > Rules** sekmesine gidip aşağıdakini yapıştırıp yayınlayın:
 
 ```
 rules_version = '2';
@@ -58,6 +58,17 @@ service firebase.storage {
 ```
 
 Bu kurallar sayesinde menü herkes tarafından görüntülenebilir, ama sadece giriş yapmış (Authentication'a eklediğiniz) yönetici değişiklik yapabilir.
+
+## Karşılama videosu: link ile ekleme (Storage/Blaze gerektirmez)
+
+Admin panelinde **Ayarlar > Karşılama Videosu** kutusunda bir **video linki** alanı var. Storage/Blaze planına ihtiyaç duymadan, videonuzu (örn. işletmenizin drone çekimi) şu yollardan biriyle barındırıp doğrudan dosya linkini (`.mp4` ile biten, tarayıcıda doğrudan oynatılabilen bir link) buraya yapıştırabilirsiniz:
+
+- **Cloudinary** (ücretsiz plan) — video yükleyip size verdiği doğrudan linki kullanın.
+- **Kendi web siteniz / hosting'iniz** — videoyu oraya koyup linkini kullanın.
+- **Google Drive** — dosyayı "Bağlantıya sahip olan herkes" olarak paylaşıp doğrudan indirme linkine çevirin (`...&export=download` formatı); büyük dosyalarda bazen sorunlu olabilir.
+- **Dropbox** — paylaşım linkinin sonundaki `?dl=0` kısmını `?dl=1` yapın.
+
+**YouTube/Vimeo linkleri çalışmaz** — bunlar `<video>` etiketiyle doğrudan oynatılamaz, sayfa gömme (embed) gerektirir. Doğrudan bir `.mp4`/`.webm` dosya linki olmalı.
 
 ## 3) Yerel test
 
