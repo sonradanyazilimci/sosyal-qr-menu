@@ -1,5 +1,6 @@
 import { onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
 import { FIREBASE_CONFIGURED, menuDocRef, renderConfigMissing } from './firebase-init.js';
+import { getAllergen } from './allergens.js';
 
 const app = document.getElementById('app');
 
@@ -104,6 +105,27 @@ function renderQuickLinks(settings) {
   return `<section class="quick-links">${items.join('')}</section>`;
 }
 
+function renderAllergenList(product) {
+  if (!product.allergens || !product.allergens.length) return '';
+  const items = product.allergens.map((id) => getAllergen(id)).filter(Boolean);
+  if (!items.length) return '';
+  return `
+    <div class="sheet-allergens">
+      <p class="sheet-allergens-label">Alerjenler</p>
+      <div class="sheet-allergens-list">
+        ${items.map((a) => `<span class="allergen-chip">${a.emoji} ${esc(a.label)}</span>`).join('')}
+      </div>
+    </div>`;
+}
+
+function allergenIconsStrip(product) {
+  if (!product.allergens || !product.allergens.length) return '';
+  const items = product.allergens.map((id) => getAllergen(id)).filter(Boolean);
+  if (!items.length) return '';
+  const title = items.map((a) => a.label).join(', ');
+  return `<p class="product-allergens" title="${esc(title)}">${items.map((a) => a.emoji).join(' ')}</p>`;
+}
+
 function productCard(product, currency) {
   const media = product.image
     ? `<img src="${esc(product.image)}" alt="${esc(product.name)}" loading="lazy" />`
@@ -116,6 +138,7 @@ function productCard(product, currency) {
       <div class="product-scrim">
         <p class="product-name">${esc(product.name)}</p>
         <p class="product-price">${esc(formatPrice(product.price, currency))}</p>
+        ${allergenIconsStrip(product)}
       </div>
     </button>`;
 }
@@ -301,6 +324,7 @@ function renderApp(data) {
           <h2 class="sheet-name">${esc(product.name)}</h2>
           ${metaBits.length ? `<p class="sheet-meta">${metaBits.map(esc).join('<span>·</span>')}</p>` : ''}
           ${product.description ? `<p class="sheet-desc">${esc(product.description)}</p>` : ''}
+          ${renderAllergenList(product)}
           <hr class="sheet-divider" />
           <p class="sheet-price">${esc(formatPrice(product.price, settings.currency))}</p>
         </div>`;

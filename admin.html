@@ -212,6 +212,8 @@
         </div>
         <textarea name="description" placeholder="Açıklama" rows="2"></textarea>
         <input type="text" name="imageUrl" placeholder="Fotoğraf linki veya media/urun.jpg (opsiyonel)" />
+        <p class="allergen-picker-label">Alerjenler (varsa seçin)</p>
+        <div class="allergen-picker" data-allergen-picker></div>
         <div class="field-grid tight">
           <input type="file" name="image" accept="image/*" />
           <button type="submit" class="btn-primary small">Ürün Ekle</button>
@@ -233,6 +235,8 @@
       </div>
       <textarea class="p-desc" rows="2" placeholder="Açıklama"></textarea>
       <input type="text" class="p-image-url" placeholder="Fotoğraf linki veya media/urun.jpg" />
+      <p class="allergen-picker-label">Alerjenler</p>
+      <div class="allergen-picker" data-allergen-picker></div>
       <div class="field-grid tight">
         <input type="file" class="p-image" accept="image/*" />
         <label class="checkbox-label"><input type="checkbox" class="p-clear-image" /> Fotoğrafı kaldır</label>

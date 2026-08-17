@@ -17,6 +17,7 @@ import {
   getDownloadURL,
 } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js';
 import { FIREBASE_CONFIGURED, auth, storage, menuDocRef, renderConfigMissing } from './firebase-init.js';
+import { ALLERGENS } from './allergens.js';
 
 if (!FIREBASE_CONFIGURED) {
   renderConfigMissing(document.getElementById('configMissing'));
@@ -53,6 +54,18 @@ function initAdmin() {
 
   function newId(prefix) {
     return `${prefix}-${crypto.randomUUID()}`;
+  }
+
+  function buildAllergenPickerHTML(selected = []) {
+    return ALLERGENS.map((a) => `
+      <label class="allergen-chip-toggle">
+        <input type="checkbox" value="${a.id}" ${selected.includes(a.id) ? 'checked' : ''} />
+        <span>${a.emoji} ${a.label}</span>
+      </label>`).join('');
+  }
+
+  function readAllergenPicker(container) {
+    return Array.from(container.querySelectorAll('input[type="checkbox"]:checked')).map((cb) => cb.value);
   }
 
   async function uploadFile(file, kind) {
@@ -353,6 +366,8 @@ function initAdmin() {
     });
 
     const addForm = node.querySelector('[data-add-product]');
+    const addAllergenPicker = addForm.querySelector('[data-allergen-picker]');
+    addAllergenPicker.innerHTML = buildAllergenPickerHTML();
     addForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const fd = new FormData(addForm);
@@ -372,6 +387,7 @@ function initAdmin() {
           calories: fd.get('calories') ? Number(fd.get('calories')) : null,
           image,
           badge: fd.get('badge') || '',
+          allergens: readAllergenPicker(addAllergenPicker),
           sortOrder: maxOrder + 1,
         });
         await saveCategories();
@@ -407,6 +423,8 @@ function initAdmin() {
     node.querySelector('.p-badge').value = product.badge || '';
     node.querySelector('.p-desc').value = product.description || '';
     node.querySelector('.p-image-url').value = product.image || '';
+    const rowAllergenPicker = node.querySelector('[data-allergen-picker]');
+    rowAllergenPicker.innerHTML = buildAllergenPickerHTML(product.allergens || []);
 
     node.querySelector('[data-action="save-product"]').addEventListener('click', async () => {
       try {
@@ -416,6 +434,7 @@ function initAdmin() {
         product.calories = calVal ? Number(calVal) : null;
         product.badge = node.querySelector('.p-badge').value;
         product.description = node.querySelector('.p-desc').value;
+        product.allergens = readAllergenPicker(rowAllergenPicker);
 
         const imageFile = node.querySelector('.p-image').files[0];
         const imageUrl = node.querySelector('.p-image-url').value.trim();
